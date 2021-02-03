@@ -12,6 +12,7 @@ const Messages = ({
     uid: string;
     sender: string;
     senderEmail: string;
+    timestamp: number;
   }>;
 }) => {
   //console.log(messages);

@@ -56,6 +56,10 @@ const RightInnerContainer = styled.div`
 const RoomName = styled.h3`
   margin-left: 5%;
   color: #353535;
+
+  @media (max-width: 280px) {
+    font-size: 18px;
+  }
 `;
 
 const IconButton = styled.button`

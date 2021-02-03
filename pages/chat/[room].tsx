@@ -92,7 +92,8 @@ const Chat = ({
         .doc(roomId)
         .collection("messages")
         .onSnapshot((snap) => {
-          const chats = snap.docs.map((doc) => ({
+          let chats = [];
+          chats = snap.docs.map((doc) => ({
             //   id: doc.id,
             ...doc.data(),
           }));
@@ -133,14 +134,6 @@ const Chat = ({
     } catch (err) {
       console.log("logout error: ", err.message);
     }
-  };
-
-  const formatTime = (timestamp: string | number | Date) => {
-    const d = new Date(timestamp);
-    const time = `${d.getDate()}/${
-      d.getMonth() + 1
-    }/${d.getFullYear()} ${d.getHours()}:${d.getMinutes()}`;
-    return time;
   };
 
   const handlerModal = () => setModalInfoVisible(true);

@@ -4,13 +4,14 @@ import ReactEmoji from "react-emoji";
 import fire from "../services/firebase";
 
 const Message = ({
-  message: { content, uid, sender, senderEmail },
+  message: { content, uid, sender, senderEmail, timestamp },
 }: {
   message: {
     content: string;
     uid: string;
     sender: string;
     senderEmail: string;
+    timestamp: number;
   };
 }) => {
   const [user, setUser] = useState(fire.auth().currentUser);
@@ -25,6 +26,12 @@ const Message = ({
       }
     });
   }, []);
+
+  const formatTime = (timestamp: string | number | Date) => {
+    const d = new Date(timestamp);
+    const time = `${d.getHours()}:${d.getMinutes()}`;
+    return time;
+  };
 
   let isSentByCurrentUser = false;
   if (user.uid === uid) {
@@ -49,12 +56,14 @@ const Message = ({
       <SentText pr_10>{displayInChatCurrentName}</SentText>
       <MessageBox backgroundBlue>
         <MessageText colorWhite>{ReactEmoji.emojify(content)}</MessageText>
+        <DateSpam>{formatTime(timestamp)}</DateSpam>
       </MessageBox>
     </MessageContainer>
   ) : (
     <MessageContainer justifyStart>
       <MessageBox backgroundLight>
         <MessageText colorDark>{ReactEmoji.emojify(content)}</MessageText>
+        <DateSpam>{formatTime(timestamp)}</DateSpam>
       </MessageBox>
       <SentText pl_10>{displayInChatAhotherName}</SentText>
     </MessageContainer>
@@ -66,7 +75,7 @@ export default Message;
 const MessageContainer = styled.div`
   display: flex;
   justify-content: ${(props) => (props.justifyEnd ? "flex-end" : "flex-start")};
-  padding: 0 5%;
+  padding: 0 3%;
   margin-top: 3px;
 `;
 
@@ -107,4 +116,12 @@ const MessageText = styled.p`
   @media (max-width: 768px) {
     font-size: 16px;
   }
+`;
+
+const DateSpam = styled.div`
+  font-size: 12px;
+  float: right;
+  color: gray;
+  padding: 0;
+  margin: 0;
 `;
