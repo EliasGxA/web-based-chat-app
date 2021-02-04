@@ -65,6 +65,7 @@ const LogIn = () => {
       setToast({
         text: err.message,
         type: "error",
+        delay: 5000,
       });
     }
     // update authorizing state
@@ -89,6 +90,7 @@ const LogIn = () => {
       setToast({
         text: err.message,
         type: "error",
+        delay: 5000,
       });
     }
     // update authorizing state
@@ -150,15 +152,7 @@ const LogIn = () => {
             />
           </InputContainer>
         </Row>
-        <Spacer y={0.2} />
-        <Row justify="center">
-          {error ? (
-            <Text size={downXS ? 14 : 16} type="error">
-              There is an error here! Please, check your Network
-            </Text>
-          ) : null}
-        </Row>
-        <Spacer y={1} />
+        <Spacer y={1.2} />
 
         <Row justify="center">
           <Button

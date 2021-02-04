@@ -16,6 +16,7 @@ import Messages from "../../components/Messages";
 
 import fire from "../../services/firebase";
 import { logout } from "../../helpers/auth";
+import { makeId } from "../../helpers/db";
 
 export const getServerSideProps: GetServerSideProps = async (
   context: GetServerSidePropsContext
@@ -50,6 +51,11 @@ const Chat = ({
   const [modalInfoVisible, setModalInfoVisible] = useState(false);
 
   const [, setToast] = useToasts();
+  const action = {
+    name: "cancel",
+    passive: true,
+    handler: (event, cancel) => cancel(),
+  };
 
   useEffect(() => {
     fire.auth().onAuthStateChanged(function (user) {
@@ -78,7 +84,8 @@ const Chat = ({
           setToast({
             text: `Room created. Share your room id code: ${roomId}`,
             type: "success",
-            delay: 10000,
+            delay: 8000,
+            actions: [action],
           });
         } catch (error) {
           console.log("createRoom", error.message);
@@ -94,9 +101,33 @@ const Chat = ({
         .onSnapshot((snap) => {
           let chats = [];
           chats = snap.docs.map((doc) => ({
-            //   id: doc.id,
+            id: doc.id,
             ...doc.data(),
           }));
+
+          chats.forEach((chat) => {
+            if (!chat.timestamp) {
+              chat.timestamp = Date.now();
+
+              let docRef = db
+                .collection("rooms")
+                .doc(roomId)
+                .collection("messages")
+                .doc(chat.id);
+
+              return docRef
+                .update({
+                  timestamp: chat.timestamp,
+                })
+                .then(function () {
+                  console.log("Document successfully updated!");
+                })
+                .catch(function (error) {
+                  // doc probably doesn't exist
+                  console.error("Error updating document: ", error);
+                });
+            }
+          });
 
           chats.sort(function (a, b) {
             return a.timestamp - b.timestamp;
@@ -113,17 +144,32 @@ const Chat = ({
   const handleSubmit = async (event: { preventDefault: () => void }) => {
     event.preventDefault();
 
-    try {
-      db.collection("rooms").doc(roomId).collection("messages").add({
-        content: content,
-        timestamp: Date.now(),
-        uid: user.uid,
-        sender: user.displayName,
-        senderEmail: user.email,
-      });
-      setContent("");
-    } catch (error) {
-      console.log(error.message);
+    if (content) {
+      const newDocId = makeId(10);
+
+      let docRef = db
+        .collection("rooms")
+        .doc(roomId)
+        .collection("messages")
+        .doc(newDocId);
+
+      try {
+        docRef.set({
+          content: content,
+          timestamp: null,
+          uid: user.uid,
+          sender: user.displayName,
+          senderEmail: user.email,
+        });
+        setContent("");
+      } catch (error) {
+        console.log(error.message);
+      }
+
+      // Update the timestamp field with the value from the server
+      //let updateTimestamp = docRef.update({
+      // timestamp: fire.firestore.FieldValue.serverTimestamp(),
+      //});
     }
   };
 

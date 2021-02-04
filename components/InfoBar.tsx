@@ -32,6 +32,7 @@ const InfoBar = ({
 export default InfoBar;
 
 const InfoBarContainer = styled.div`
+  position: sticky;
   display: flex;
   align-items: center;
   justify-content: space-between;

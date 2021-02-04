@@ -11,7 +11,7 @@ const Message = ({
     uid: string;
     sender: string;
     senderEmail: string;
-    timestamp: number;
+    timestamp: Date;
   };
 }) => {
   const [user, setUser] = useState(fire.auth().currentUser);
@@ -27,9 +27,13 @@ const Message = ({
     });
   }, []);
 
-  const formatTime = (timestamp: string | number | Date) => {
+  const formatTime = (timestamp: Date) => {
     const d = new Date(timestamp);
-    const time = `${d.getHours()}:${d.getMinutes()}`;
+
+    let time = `${d
+      .getHours()
+      .toString()
+      .padStart(2, "0")}:${d.getMinutes().toString().padStart(2, "0")}`;
     return time;
   };
 
@@ -38,17 +42,22 @@ const Message = ({
     isSentByCurrentUser = true;
   }
 
-  const currenUserEmail = user.email.split("@")[0];
-  let displayInChatCurrentName = user.displayName || currenUserEmail;
-
-  const displaySenderEmail = senderEmail.split("@")[0];
+  let displayInChatCurrentName;
+  if (user.displayName) {
+    // display first Google name
+    displayInChatCurrentName = user.displayName.split(" ")[0];
+  } else {
+    // display email name
+    displayInChatCurrentName = user.email.split("@")[0];
+  }
 
   let displayInChatAhotherName;
-
   if (sender) {
+    // display first Google name
     displayInChatAhotherName = sender.trim().toLowerCase();
   } else {
-    displayInChatAhotherName = displaySenderEmail;
+    // display email name
+    displayInChatAhotherName = senderEmail.split("@")[0];
   }
 
   return isSentByCurrentUser ? (
@@ -99,6 +108,7 @@ const MessageBox = styled.div`
   height: auto;
   display: inline-block;
   max-width: 70%;
+  word-wrap: break-word;
   background: ${(props) => (props.backgroundLight ? "#273443" : "#bbdefb")};
 `;
 

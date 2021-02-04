@@ -62,6 +62,7 @@ const SignUp = () => {
       setToast({
         text: err.message,
         type: "error",
+        delay: 5000,
       });
     }
     // update authorizing state
@@ -85,6 +86,7 @@ const SignUp = () => {
       setToast({
         text: err.message,
         type: "error",
+        delay: 5000,
       });
     }
 
@@ -146,15 +148,7 @@ const SignUp = () => {
             />
           </InputContainer>
         </Row>
-        <Spacer y={0.2} />
-        <Row justify="center">
-          {error ? (
-            <Text size={downXS ? 14 : 16} type="error">
-              There is an error here! Check your Network
-            </Text>
-          ) : null}
-        </Row>
-        <Spacer y={1} />
+        <Spacer y={1.2} />
         <Row justify="center">
           <Button
             loading={authorizing.withEmail}
