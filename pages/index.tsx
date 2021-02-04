@@ -56,15 +56,21 @@ const Home = () => {
           .where("owner", "==", user.uid)
           .get()
           .then(function (querySnapshot) {
+            let myRooms = [];
             querySnapshot.forEach(function (doc) {
               const newPartialDoc: RoomDoc = {
                 name: doc.data().name,
                 id: doc.data().roomId,
               };
-              if (!myRooms.includes(newPartialDoc)) {
+
+              /* if (!myRooms.includes(newPartialDoc)) {
                 setMyRooms((myRooms) => [...myRooms, newPartialDoc]);
-              }
+              } */
+
+              myRooms.push(newPartialDoc);
             });
+
+            setMyRooms(myRooms);
           })
           .catch(function (error) {
             console.log("Error getting documents: ", error);
@@ -194,8 +200,12 @@ const Home = () => {
               style={{ width: downXS ? "85%" : "75%" }}
             >
               <div style={{}}>
-                {myRooms === [] ? (
-                  <Text type="secondary"> There aren't rooms here! </Text>
+                {myRooms.length === 0 ? (
+                  <Text type="secondary">
+                    {" "}
+                    Hey! There aren't rooms here!{" "}
+                    <b> Create your first room now</b>{" "}
+                  </Text>
                 ) : (
                   myRooms.map((room) => (
                     <Row
@@ -268,20 +278,30 @@ const Home = () => {
       ) : (
         <div>
           <Row justify="center">
-            {downXS ? <Text h2>Join now</Text> : <Text h1>Join now</Text>}
+            {downXS ? (
+              <Text h2>Roomie Chat </Text>
+            ) : (
+              <Text h1>Roomie Chat</Text>
+            )}
           </Row>
           <Row justify="center">
             {downXS ? (
-              <Text h4>Click below to sign in or join</Text>
+              <Text h4 type="secondary">
+                Click below to sign in or join
+              </Text>
             ) : (
-              <Text h2>Click below to sign in or join</Text>
+              <Text h2 type="secondary">
+                Click below to sign in or join
+              </Text>
             )}
           </Row>
           <Row justify="center">
             <Link href="/signup">
               <a>
                 {" "}
-                <Button size={downXS ? "small" : null}>Get Started</Button>{" "}
+                <Button type="success-light" size={downXS ? "small" : null}>
+                  Get Started
+                </Button>{" "}
               </a>
             </Link>
           </Row>
