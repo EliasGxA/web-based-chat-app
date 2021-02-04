@@ -30,6 +30,7 @@ const InputArea = ({
 export default InputArea;
 
 const Form = styled.form`
+  position: sticky;
   display: flex;
   justify-content: space-between;
 `;

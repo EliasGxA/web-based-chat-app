@@ -105,9 +105,12 @@ const Chat = ({
             ...doc.data(),
           }));
 
-          chats.forEach((chat) => {
-            if (!chat.timestamp) {
-              chat.timestamp = Date.now();
+          {
+            /*
+           chats.forEach((chat) => {
+            // not current user and last message
+            if (!chat.timestampReceiver && chat.uid !== user.uid) {
+              chat.timestampReceiver = Date.now(); // time to display in my chat for messages (except my messages) 
 
               let docRef = db
                 .collection("rooms")
@@ -117,7 +120,7 @@ const Chat = ({
 
               return docRef
                 .update({
-                  timestamp: chat.timestamp,
+                  timestampReceiver: chat.timestampReceiver,
                 })
                 .then(function () {
                   console.log("Document successfully updated!");
@@ -128,6 +131,9 @@ const Chat = ({
                 });
             }
           });
+          
+          */
+          }
 
           chats.sort(function (a, b) {
             return a.timestamp - b.timestamp;
@@ -156,10 +162,10 @@ const Chat = ({
       try {
         docRef.set({
           content: content,
-          timestamp: null,
           uid: user.uid,
           sender: user.displayName,
           senderEmail: user.email,
+          timestamp: Date.now(),
         });
         setContent("");
       } catch (error) {

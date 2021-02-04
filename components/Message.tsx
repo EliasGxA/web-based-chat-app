@@ -54,11 +54,13 @@ const Message = ({
   let displayInChatAhotherName;
   if (sender) {
     // display first Google name
-    displayInChatAhotherName = sender.trim().toLowerCase();
+    displayInChatAhotherName = sender.split(" ")[0];
   } else {
     // display email name
     displayInChatAhotherName = senderEmail.split("@")[0];
   }
+
+  console.log(displayInChatAhotherName);
 
   return isSentByCurrentUser ? (
     <MessageContainer justifyEnd>
